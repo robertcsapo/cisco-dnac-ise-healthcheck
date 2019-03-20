@@ -1,13 +1,13 @@
 # Cisco DNA Center ISE Health Check
 
-*Cisco DNA-C Communication Health Check from Console*
+*Cisco DNA-C and Cisco ISE Communication Health Check from Console*
 
 Sometimes Cisco DNA-C fails to communicate with Cisco ISE with Error on Application level.  
 This script helps you to verify that the communication paths between Cisco DNA-C and Cisco ISE is working (non-Application level)
 
 ## Demo
 
-What visual, if shown, clearly articulates the impact of what you have created?  In as concise a visualization as possible (code sample, CLI output, animated GIF, or screenshot) show what your project makes possible.
+![Demo](./demo.gif)
 
 ## Requirements
 
