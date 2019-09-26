@@ -82,6 +82,8 @@ func main() {
   ise.ersPort = "9060"
   ise.pxGridInterPort = "5222"
   ise.pxGridSubPort = "8910"
+  // Reference
+  // https://www.cisco.com/c/en/us/td/docs/security/ise/2-6/install_guide/b_ise_InstallationGuide_26/b_ise_InstallationGuide_26_chapter_0110.html
 
   if (connectTest(ise.Host, ise.sshPort, ise.Proto) == "Online") {
     log.Println("SUCCESS:\t\tCisco ISE ("+ise.Host+") - SSH port ("+ise.sshPort+") is accessible")

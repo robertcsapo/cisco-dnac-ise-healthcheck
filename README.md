@@ -35,7 +35,9 @@ Run script with host flag
 
 If you need to manually build the script on the host.  
 (Important that you predownload golang:1.9.2-alpine3.7 from docker.io)  
-```docker pull golang:1.9.2-alpine3.7```
+```
+docker pull golang:1.9.2-alpine3.7
+```
 
 ### Build
 * ```docker build -t robertcsapo/cisco-dnac-ise-healthcheck .```
@@ -55,6 +57,27 @@ If you need to manually build the script on the host.
 ## Authors & Maintainers
 
 - Robert Csapo <rcsapo@cisco.com>
+
+## Cisco ISE Port Reference
+#### Overview
+![](./cisco-dnac-ise-communication.png)
+#### Cisco ISE 2.6 Installation Guide
+
+_Ports Used by the Administration Nodes_
+* _Administration_
+  * _HTTP: TCP/80, HTTPS: TCP/443 (TCP/80 redirected to TCP/443; not configurable)_
+  * _SSH Server: TCP/22_
+  * _External RESTful Services (ERS) REST API: TCP/9060_
+
+_Ports Used by the pxGrid Service Node_
+
+* _Administration_
+  * _SSL: TCP/5222 (Inter-Node Communication)_
+  * _SSL: TCP/7400 (Node Group Communication)_
+* _pxGrid Subscribers_
+  * _TCP/8910_
+
+(Source: https://www.cisco.com/c/en/us/td/docs/security/ise/2-6/install_guide/b_ise_InstallationGuide_26/b_ise_InstallationGuide_26_chapter_0110.html)
 
 ## License
 
