@@ -1,4 +1,7 @@
 # Cisco DNA Center ISE Health Check
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/robertcsapo/cisco-dnac-ise-healthcheck)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/robertcsapo/cisco-dnac-ise-healthcheck)
+![Docker Pulls](https://img.shields.io/docker/pulls/robertcsapo/cisco-dnac-ise-healthcheck)
 
 *Cisco DNA-C and Cisco ISE Communication Health Check from Console*
 
