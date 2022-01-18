@@ -1,11 +1,11 @@
-# Build Image
-FROM golang:1.9.2-alpine3.7 as build
+# Build Binary
+FROM golang:1.17.6-bullseye as build
 WORKDIR /go/src/cisco-dnac-ise-healthcheck/
-ADD main.go main.go
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+ADD . .
+RUN /bin/bash build.sh
 
-# Build Container
+# Build Container Image
 FROM scratch
-COPY --from=build /go/src/cisco-dnac-ise-healthcheck/main /go/src/cisco-dnac-ise-healthcheck/main
-WORKDIR /go/src/cisco-dnac-ise-healthcheck/
-ENTRYPOINT ["./main"]
+COPY --from=build /go/src/cisco-dnac-ise-healthcheck/bin/cisco-dnac-ise-healthcheck-linux-amd64 /app/
+WORKDIR /app/
+ENTRYPOINT ["./cisco-dnac-ise-healthcheck-linux-amd64"]

@@ -24,90 +24,106 @@
 package main
 
 import (
-  "log"
-  "net"
-  "flag"
-  "fmt"
+	"flag"
+	"fmt"
+	"log"
+	"net"
+	"os"
 )
+
+// App for application data
+type App struct {
+	Name    string // Application Name
+	Version string // Version
+}
 
 // Cisco ISE Settings Struct
 type iseStruct struct {
-  Host              string
-  Proto             string
-  sshPort           string
-  webPort           string
-  ersPort           string
-  pxGridInterPort   string
-  pxGridSubPort     string
+	Host            string // Cisco ISE Host
+	Proto           string // Using TCP
+	sshPort         string // TCP 22
+	webPort         string // TCP 443
+	ersPort         string // TCP 9060
+	pxGridInterPort string // TCP 5222
+	pxGridSubPort   string // TCP 8910
 }
 
 // Create a var based of ISE Struct
 var ise iseStruct
 
 // Connection Test function
-func connectTest(host,port,proto string) string {
-  host = host+":"+port
-  var status string
-  conn, err := net.Dial(proto, host)
-  if err != nil {
-          log.Println("ERROR:\t\t", err)
-          status = "Unreachable"
-  } else {
-          status = "Online"
-          defer conn.Close()
-  }
-  return(status)
+func connectTest(host, port, proto string) string {
+	host = host + ":" + port
+	var status string
+	conn, err := net.Dial(proto, host)
+	if err != nil {
+		log.Println("ERROR:\t\t", err)
+		status = "Unreachable"
+	} else {
+		status = "Online"
+		defer conn.Close()
+	}
+	return (status)
 }
 
 // Main function
 func main() {
-  flagHost := flag.String("host", "", "cisco ise hostname/ip-address")
-  flag.Parse()
+	application := &App{
+		Name:    "cisco-dnac-ise-healthcheck",
+		Version: "v1.0",
+	}
+	flagHost := flag.String("host", "", "cisco ise hostname/ip-address")
+	flagVersion := flag.Bool("version", false, "version")
+	flag.Parse()
 
+	if *flagVersion {
+		fmt.Println(application.Name, application.Version)
+		os.Exit(0)
+	}
 
-  if (*flagHost != "") {
-    // set ISE host if flag is used
-    ise.Host = string(*flagHost)
-  } else {
-    // get ISE host from input, as flag is missing
-    fmt.Print("Enter host (FQDN): ")
-    var host string
-    fmt.Scanln(&host)
-    ise.Host = host
-  }
+	if *flagHost != "" {
+		// set ISE host if flag is used
+		ise.Host = string(*flagHost)
+	} else {
+		// get ISE host from input, as flag is missing
+		fmt.Print("Enter host (FQDN): ")
+		var host string
+		fmt.Scanln(&host)
+		ise.Host = host
+	}
 
-  ise.Proto = "tcp"
-  ise.sshPort = "22"
-  ise.webPort = "443"
-  ise.ersPort = "9060"
-  ise.pxGridInterPort = "5222"
-  ise.pxGridSubPort = "8910"
-  // Reference
-  // https://www.cisco.com/c/en/us/td/docs/security/ise/2-6/install_guide/b_ise_InstallationGuide_26/b_ise_InstallationGuide_26_chapter_0110.html
+	ise.Proto = "tcp"
+	ise.sshPort = "22"
+	ise.webPort = "443"
+	ise.ersPort = "9060"
+	ise.pxGridInterPort = "5222"
+	ise.pxGridSubPort = "8910"
+	// Reference
+	// https://www.cisco.com/c/en/us/td/docs/security/ise/2-6/install_guide/b_ise_InstallationGuide_26/b_ise_InstallationGuide_26_chapter_0110.html
 
-  if (connectTest(ise.Host, ise.sshPort, ise.Proto) == "Online") {
-    log.Println("SUCCESS:\t\tCisco ISE ("+ise.Host+") - SSH port ("+ise.sshPort+") is accessible")
-  } else {
-    log.Println("ERROR:\t\tCisco ISE ("+ise.Host+") - SSH port ("+ise.sshPort+") is NOT accessible")
-  }
-  if (connectTest(ise.Host, ise.webPort, ise.Proto) == "Online") {
-    log.Println("SUCCESS:\t\tCisco ISE ("+ise.Host+") - Web port ("+ise.webPort+") is accessible")
-  } else {
-    log.Println("ERROR:\t\tCisco ISE ("+ise.Host+") - Web port ("+ise.webPort+") is NOT accessible")
-  }
-  if (connectTest(ise.Host, ise.ersPort, ise.Proto) == "Online") {
-    log.Println("SUCCESS:\t\tCisco ISE ("+ise.Host+") - ERS API port ("+ise.ersPort+") is accessible")
-  } else {
-    log.Println("ERROR:\t\tCisco ISE ("+ise.Host+") - ERS API port ("+ise.ersPort+") is NOT accessible")
-  }
-  if (connectTest(ise.Host, ise.pxGridInterPort, ise.Proto) == "Online") {
-    log.Println("SUCCESS:\t\tCisco ISE ("+ise.Host+") - pxGrid Inter-Node Communication port ("+ise.pxGridInterPort+") is accessible")
-  } else {
-    log.Println("ERROR:\t\tCisco ISE ("+ise.Host+") - pxGrid Inter-Node Communication port ("+ise.pxGridInterPort+") is NOT accessible")
-  }
-  if (connectTest(ise.Host, ise.pxGridSubPort, ise.Proto) == "Online") {
-    log.Println("SUCCESS:\t\tCisco ISE ("+ise.Host+") - pxGrid Subscribers port ("+ise.pxGridSubPort+") is accessible")
-  } else {
-    log.Println("ERROR:\t\tCisco ISE ("+ise.Host+") - pxGrid Subscribers port ("+ise.pxGridSubPort+") is NOT accessible")
-  }
+	if connectTest(ise.Host, ise.sshPort, ise.Proto) == "Online" {
+		log.Println("SUCCESS:\t\tCisco ISE (" + ise.Host + ") - SSH port (" + ise.sshPort + ") is accessible")
+	} else {
+		log.Println("ERROR:\t\tCisco ISE (" + ise.Host + ") - SSH port (" + ise.sshPort + ") is NOT accessible")
+	}
+	if connectTest(ise.Host, ise.webPort, ise.Proto) == "Online" {
+		log.Println("SUCCESS:\t\tCisco ISE (" + ise.Host + ") - Web port (" + ise.webPort + ") is accessible")
+	} else {
+		log.Println("ERROR:\t\tCisco ISE (" + ise.Host + ") - Web port (" + ise.webPort + ") is NOT accessible")
+	}
+	if connectTest(ise.Host, ise.ersPort, ise.Proto) == "Online" {
+		log.Println("SUCCESS:\t\tCisco ISE (" + ise.Host + ") - ERS API port (" + ise.ersPort + ") is accessible")
+	} else {
+		log.Println("ERROR:\t\tCisco ISE (" + ise.Host + ") - ERS API port (" + ise.ersPort + ") is NOT accessible")
+	}
+	if connectTest(ise.Host, ise.pxGridInterPort, ise.Proto) == "Online" {
+		log.Println("SUCCESS:\t\tCisco ISE (" + ise.Host + ") - pxGrid Inter-Node Communication port (" + ise.pxGridInterPort + ") is accessible")
+	} else {
+		log.Println("ERROR:\t\tCisco ISE (" + ise.Host + ") - pxGrid Inter-Node Communication port (" + ise.pxGridInterPort + ") is NOT accessible")
+	}
+	if connectTest(ise.Host, ise.pxGridSubPort, ise.Proto) == "Online" {
+		log.Println("SUCCESS:\t\tCisco ISE (" + ise.Host + ") - pxGrid Subscribers port (" + ise.pxGridSubPort + ") is accessible")
+	} else {
+		log.Println("ERROR:\t\tCisco ISE (" + ise.Host + ") - pxGrid Subscribers port (" + ise.pxGridSubPort + ") is NOT accessible")
+	}
 }
